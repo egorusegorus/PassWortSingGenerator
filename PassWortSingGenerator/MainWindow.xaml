@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:PassWortSingGenerator"
         mc:Ignorable="d"
         Title="MainWindow" Height="436" Width="496">
-    <Grid ShowGridLines="True">
+    <Grid >
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
@@ -29,7 +29,7 @@
                 <ColumnDefinition Width="100"/>
             </Grid.ColumnDefinitions>
             <Label Grid.Column="0" Content="Wie viele Zeichen sollte das Passwort haben?" HorizontalContentAlignment="Right" Margin="10,10,10,10"/>
-            <TextBox x:Name="txtBox" Grid.Column="1" Margin="10,10,10,10" />
+            <TextBox x:Name="txtBox" Grid.Column="1" Margin="10,10,10,10" MaxLength="4"/>
         </Grid>
         <Grid Grid.Column="1" Grid.Row="2">
             <Grid.ColumnDefinitions>
@@ -37,7 +37,7 @@
                 <ColumnDefinition Width="100"/>
             </Grid.ColumnDefinitions>
             <Label Grid.Column="0" Content="Silbenpasswort" HorizontalContentAlignment="Right" Margin="10,10,10,10"/>
-            <CheckBox x:Name="Sylaben" Grid.Column="1" Margin="10,15,15,15"/>
+            <CheckBox x:Name="Sylaben" Grid.Column="1" Margin="10,15,15,15" HorizontalAlignment="Center" Click="Sylaben_Click"/>
         </Grid>
         <Grid Grid.Column="1" Grid.Row="3">
             <Grid.ColumnDefinitions>
@@ -45,7 +45,7 @@
                 <ColumnDefinition Width="100"/>
             </Grid.ColumnDefinitions>
             <Label Grid.Column="0" Content="Sonderzeichnen" HorizontalContentAlignment="Right" Margin="10,10,10,10"/>
-            <CheckBox x:Name="Speziale_zeichnen" Grid.Column="1" Margin="10,15,15,15"/>
+            <CheckBox x:Name="Speziale_zeichnen" Grid.Column="1" Margin="10,15,15,15" HorizontalAlignment="Center" Click="Speziale_zeichnen_Click"/>
         </Grid>
         <Grid Grid.Column="1" Grid.Row="4">
             <Grid.ColumnDefinitions>
@@ -53,7 +53,7 @@
                 <ColumnDefinition Width="100"/>
             </Grid.ColumnDefinitions>
             <Label Grid.Column="0" Content="Zahlen" HorizontalContentAlignment="Right" Margin="10,10,10,10"/>
-            <CheckBox x:Name="Zahlen" Grid.Column="1" Margin="10,15,15,15"/>
+            <CheckBox x:Name="Zahlen" Grid.Column="1" Margin="10,15,15,15" HorizontalAlignment="Center" Click="Zahlen_Click"/>
         </Grid>
         <Grid Grid.Column="1" Grid.Row="5">
             <Grid.ColumnDefinitions>
@@ -61,7 +61,7 @@
                 <ColumnDefinition Width="100"/>
             </Grid.ColumnDefinitions>
             <Label Grid.Column="0" Content="GROßE BUCHSTABEN" HorizontalContentAlignment="Right" Margin="10,10,10,10"/>
-            <CheckBox x:Name="GroßeBuchstaben" Grid.Column="1" Margin="10,15,15,15"/>
+            <CheckBox x:Name="GroßeBuchstaben" Grid.Column="1" Margin="10,15,15,15" HorizontalAlignment="Center"/>
         </Grid>
         <Grid Grid.Column="1" Grid.Row="6">
             <Grid.ColumnDefinitions>
@@ -69,19 +69,19 @@
                 <ColumnDefinition Width="100"/>
             </Grid.ColumnDefinitions>
             <Label Grid.Column="0" Content="kleine Buchstaben" HorizontalContentAlignment="Right" Margin="10,10,10,10"/>
-            <CheckBox x:Name="kleineBuchstaben" Grid.Column="1" Margin="10,15,15,15"/>
+            <CheckBox x:Name="kleineBuchstaben" Grid.Column="1" Margin="10,15,15,15" HorizontalAlignment="Center"/>
         </Grid>
         <Grid Grid.Column="1" Grid.Row="7">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="50"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button x:Name="btn_Generieren" Grid.Column="0" Content="Generieren" HorizontalContentAlignment="Center"  Margin="10,10,10,10"/>
-            <TextBox x:Name="txtKennwort"  Grid.Column="1" Margin="5,10,10,10"/>
-            <Button x:Name="btn_Kopieren" Grid.Column="2" Margin="5,10,10,10">
+            <Button x:Name="btn_Generieren" Grid.Column="2" Content="Generieren" HorizontalContentAlignment="Center"  Margin="10,10,10,10" Click="btn_Generieren_Click"/>
+            <TextBox x:Name="txtKennwort"  Grid.Column="1" Margin="5,10,10,10" IsEnabled="False"/>
+            <Button x:Name="btn_Kopieren" Grid.Column="0" Margin="5,10,10,10">
                 <StackPanel HorizontalAlignment="Center">
-                    <Image Source="picture/copy.png" Width="17" Height="17" HorizontalAlignment="Center"/>
+                    <Image Source="/picture/copy.png" Width="17" Height="17" HorizontalAlignment="Center"/>
                    
                     
                 </StackPanel>
