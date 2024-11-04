@@ -11,7 +11,7 @@ namespace PassWortSingGenerator
         public MainWindow()
         {
             InitializeComponent();
-            NumericTextBoxBehavior.Attach(txtBox);
+           
         }
 
         private void Zahlen_Click(object sender, RoutedEventArgs e)
@@ -57,93 +57,231 @@ namespace PassWortSingGenerator
         }
 
         private void btn_Generieren_Click(object sender, RoutedEventArgs e)
-        {
-            int laenge = Convert.ToInt32(txtBox.Text);
-            bool sylaben = Sylaben.IsChecked ?? false;
-            bool speziale_zeichnen = Speziale_zeichnen.IsChecked ?? false;
-            bool zahlen = Zahlen.IsChecked ?? false;
-            bool großebuchstaben = GroßeBuchstaben.IsChecked ?? false;
-            bool kleinebuchstaben = kleineBuchstaben.IsChecked ?? false;
+        {  
 
-            Generation generation = new Generation(sylaben, speziale_zeichnen, zahlen, großebuchstaben, kleinebuchstaben);
-            txtKennwort.Text = generation.Asci127Random(laenge);
-        }
-    }
-
-    public class Generation
-    {
-        private bool[] Samlung = new bool[5];
-
-        public Generation(bool sylaben, bool speziale_zeichnen, bool zahlen, bool großebuchstaben, bool kleinebuchstaben)
-        {
-            Samlung[0] = sylaben;
-            Samlung[1] = speziale_zeichnen;                   //33-47,58-64,91-96,123-127
-            Samlung[2] = zahlen;                              //48-57
-            Samlung[3] = großebuchstaben;                       //65-90
-            Samlung[4] = kleinebuchstaben;                      //97-122
-        }
-        private int zieht(int a) {
-            Random random = new Random();
-            a = random.Next(a);
-            return a;
-        }
-        public string Asci127Random(int laenge)
-        {
-            int a = 0, b = 0; 
-
-            if (!Samlung[0] && Samlung[1] && Samlung[2] && Samlung[3] && Samlung[4])
+            if (Sylaben.IsChecked == true) SylabenChecked();
+            else
+            if(Sylaben.IsChecked==false&&Speziale_zeichnen.IsChecked==false&&Zahlen.IsChecked==false&&GroßeBuchstaben.IsChecked==false && 
+                kleineBuchstaben.IsChecked == false)
             {
-                a = 33;
-                b = 127; 
+                MessageBox.Show("Bitte mindestens eine Checkbox markieren.");
             }
-
-
-            Random random = new Random();
-            StringBuilder chain = new StringBuilder();
-
-            for (int i = 0; i < laenge; i++)
-            {
-                char c = Convert.ToChar(random.Next(a, b));
-                chain.Append(c);
+            else { Generation generation = new Generation();
+                generation.GeneratePassword(Speziale_zeichnen, Zahlen, GroßeBuchstaben, kleineBuchstaben,txtBox, txtKennwort);
             }
-
-            return chain.ToString();
-        }
-    }
-
-    public class NumericTextBoxBehavior
-    {
-        public static void Attach(TextBox textBox)
-        {
-            textBox.PreviewTextInput += TextBox_PreviewTextInput;
-            DataObject.AddPastingHandler(textBox, OnPaste);
         }
 
-        private static void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        public void SylabenChecked()
         {
-            e.Handled = !IsTextAllowed(e.Text);
+            Sylaben sylaben = new Sylaben();
+            string input = txtBox.Text;
+            sylaben.KennwortLange = sylaben.PruefeAufZahl(input);
+            int WievielSylaben = sylaben.KennwortLange / 3;
+            int WasIstDerRest = sylaben.KennwortLange % 3;
+            input = sylaben.GenerateKenwort(WievielSylaben, WasIstDerRest).ToString();
+            if (kleineBuchstaben.IsChecked == true && GroßeBuchstaben.IsChecked == true) { input = ChangeSize(input); }
+            else if (kleineBuchstaben.IsChecked == true && GroßeBuchstaben.IsChecked == false) { input = input.ToLower(); }
+            else if (kleineBuchstaben.IsChecked == false && GroßeBuchstaben.IsChecked == true) { input = input.ToUpper(); }
+            else if (kleineBuchstaben.IsChecked == false && GroßeBuchstaben.IsChecked == false) { input = input.ToUpper(); }
+            txtKennwort.Text = input;
         }
-
-        private static void OnPaste(object sender, DataObjectPastingEventArgs e)
+        public string ChangeSize(string text)
         {
-            if (e.DataObject.GetDataPresent(typeof(string)))
+            Random random = new Random();
+            string ergebnis = "";
+            foreach (char letter in text)
             {
-                string pastedText = (string)e.DataObject.GetData(typeof(string));
-                if (!IsTextAllowed(pastedText))
+                if (random.NextDouble() < 0.5)
                 {
-                    e.CancelCommand();
+                    ergebnis += letter.ToString().ToUpper();
                 }
+                else
+                {
+                    ergebnis += letter.ToString().ToLower();
+                }
+            }
+            return ergebnis;
+        }
+      
+        private void btn_Kopieren_Click(object sender, RoutedEventArgs e)
+        {
+            
+            if (!string.IsNullOrEmpty(txtKennwort.Text))
+            {
+                Clipboard.SetText(txtKennwort.Text);
+
             }
             else
             {
-                e.CancelCommand();
+                MessageBox.Show("Kein Text zum Kopieren.");
             }
         }
+    }
 
-        private static bool IsTextAllowed(string text)
+
+
+
+    public class Generation
+    {
+        char[] specialCharacters = new char[]
         {
-            Regex regex = new Regex("[^0-9]+");
-            return !regex.IsMatch(text);
+        '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', '[', ']', '{', '}',
+        '\\', '|', ';', ':', '\'', '\"', ',', '<', '.', '>', '/', '?', '~'};
+        char[] digits = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+        char[] letters = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
+
+
+
+        public void GeneratePassword(CheckBox checkBoxSymbols, CheckBox checkBoxZahlen, CheckBox checkBoxGrosseBuchstaben, CheckBox checkBoxKleineBuchstaben, TextBox textBox, TextBox textBox1)
+        {
+            
+            Random random = new Random();
+            Sylaben sylaben = new Sylaben();
+            string input = textBox.Text;
+
+            
+            int passwordLength = sylaben.PruefeAufZahl(input);
+            if (passwordLength <= 0)
+            {
+                textBox.Text = "Invalid password length";
+                return;
+            }
+
+           
+            List<char> possibleCharacters = new List<char>();
+
+            
+            if (checkBoxSymbols.IsChecked == true)
+            {
+                possibleCharacters.AddRange("!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~");
+            }
+
+            
+            if (checkBoxZahlen.IsChecked == true)
+            {
+                for (char c = '0'; c <= '9'; c++)
+                {
+                    possibleCharacters.Add(c);
+                }
+            }
+
+            
+            if (checkBoxGrosseBuchstaben.IsChecked == true)
+            {
+                for (char c = 'A'; c <= 'Z'; c++)
+                {
+                    possibleCharacters.Add(c);
+                }
+            }
+
+           
+            if (checkBoxKleineBuchstaben.IsChecked == true)
+            {
+                for (char c = 'a'; c <= 'z'; c++)
+                {
+                    possibleCharacters.Add(c);
+                }
+            }
+
+          
+            if (possibleCharacters.Count == 0)
+            {
+                textBox.Text = "No character types selected";
+                return;
+            }
+
+            
+            StringBuilder password = new StringBuilder();
+            for (int i = 0; i < passwordLength; i++)
+            {
+                int index = random.Next(possibleCharacters.Count);
+                password.Append(possibleCharacters[index]);
+            }
+
+            
+            textBox1.Text = password.ToString();
         }
     }
-}
+
+
+        public class NumericTextBoxBehavior
+        {
+
+        }
+        class Sylaben
+        {
+            private char[] vokale = { 'a', 'e', 'i', 'o', 'u', 'y' };
+            private char[] konsonanten = {'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm',
+                             'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z'};
+            public int SylabeLange = GetRandomIndex(1, 4);
+            public int KennwortLange { get; set; }
+
+
+
+            public string GenerateKenwort(int WieVielSylabem, int WasIstRest)
+            {
+                string kennwort = "";
+                Random random = new Random();
+                for (int i = 0; i < WieVielSylabem; i++)
+                {
+                    int a = random.Next(0, 20);
+                    int b = random.Next(0, 5);
+                    int c = random.Next(0, 20);
+
+                    if (b == 2)
+                    {
+                        int d = random.Next(0, 2);
+                        if (d == 0)
+                        {
+                            kennwort += konsonanten[a].ToString() + vokale[b].ToString() + konsonanten[c].ToString();
+                        }
+                        else if (d == 1)
+                        {
+                            c = random.Next(0, 5);
+                            kennwort += konsonanten[a].ToString() + vokale[b].ToString() + vokale[c].ToString();
+                        }
+                    }
+                    else
+                    {
+                        kennwort += konsonanten[a].ToString() + vokale[b].ToString() + konsonanten[c].ToString();
+                    }
+                }
+                if (WasIstRest == 2)
+                {
+                    int a = random.Next(0, 20);
+                    int b = random.Next(0, 5);
+                    kennwort += konsonanten[a].ToString() + vokale[b].ToString();
+                }
+                else if (WasIstRest == 1)
+                {
+
+                    int b = random.Next(0, 5);
+                    kennwort += vokale[b].ToString();
+                }
+                return kennwort;
+            }
+            private static int GetRandomIndex(int a, int b)
+            {
+                Random random = new Random();
+                return random.Next(a, b);
+            }
+
+            public int PruefeAufZahl(string input)
+            {
+                while (true)
+                {
+                    if (int.TryParse(input, out int zahl))
+                    {
+                        return zahl;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Das ist keine gültige Zahl. Bitte geben Sie eine neue Zahl ein:");
+
+                    }
+                }
+            }
+
+        }
+
+    }

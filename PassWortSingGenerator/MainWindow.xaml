@@ -79,7 +79,7 @@
             </Grid.ColumnDefinitions>
             <Button x:Name="btn_Generieren" Grid.Column="2" Content="Generieren" HorizontalContentAlignment="Center"  Margin="10,10,10,10" Click="btn_Generieren_Click"/>
             <TextBox x:Name="txtKennwort"  Grid.Column="1" Margin="5,10,10,10" IsEnabled="False"/>
-            <Button x:Name="btn_Kopieren" Grid.Column="0" Margin="5,10,10,10">
+            <Button x:Name="btn_Kopieren" Grid.Column="0" Margin="5,10,10,10" Click="btn_Kopieren_Click">
                 <StackPanel HorizontalAlignment="Center">
                     <Image Source="/picture/copy.png" Width="17" Height="17" HorizontalAlignment="Center"/>
                    
